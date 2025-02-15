@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block title %}Dashboard | swiftCRM{% endblock title %}
+
+{% block content %}
+{% if details %}
+<div class="flex flex-col gap-3 max-w-[1100px] mx-auto mt-8">
+    <p>Hi, {{request.user.username}}! 👋 </p>
+    <div class="h-[1px] w-full bg-slate-400"></div>
+    <a href="{% url "dashboard:add-new-record" %}" class="flex items-center gap-3 border-2 rounded-md border-slate-600 w-fit py-1 px-3 text-sm hover:bg-slate-600 hover:text-white transition-all duration-500 ease-in-out">Create a new record <span class="font-extrabold"><i class="fa-solid fa-plus"></i></span></a>
+    <div class="h-[1.5px] w-full bg-slate-400"></div>
+    <table class="w-full border-collapse border border-gray-300 shadow-sm">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="border border-gray-300 px-4 py-2 text-left">ID</th>
+                <th class="border border-gray-300 px-4 py-2 text-left">Name</th>
+                <th class="border border-gray-300 px-4 py-2 text-left">Email</th>
+                <th class="border border-gray-300 px-4 py-2 text-left">Phone</th>
+                <th class="border border-gray-300 px-4 py-2 text-left">Address</th>
+                <th class="border border-gray-300 px-4 py-2 text-left">City</th>
+                <th class="border border-gray-300 px-4 py-2 text-left">Province</th>
+                <th class="border border-gray-300 px-4 py-2 text-left">Country</th>
+                <th class="border border-gray-300 px-4 py-2 text-left w-48">Created at</th>
+                <th class="border border-gray-300 px-4 py-2 text-center">View</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for detail in details %}
+            <tr class="hover:bg-gray-50">
+                <td class="border border-gray-300 px-4 py-2 text-sm">{{ detail.id }}</td>
+                <td class="border border-gray-300 px-4 py-2 text-sm">{{ detail.first_name }} {{ detail.last_name }}</td>
+                <td class="border border-gray-300 px-4 py-2 text-sm">{{ detail.email }}</td>
+                <td class="border border-gray-300 px-4 py-2 text-sm">{{ detail.phone_number }}</td>
+                <td class="border border-gray-300 px-4 py-2 text-sm">{{ detail.address }}</td>
+                <td class="border border-gray-300 px-4 py-2 text-sm">{{ detail.city }}</td>
+                <td class="border border-gray-300 px-4 py-2 text-sm">{{ detail.province }}</td>
+                <td class="border border-gray-300 px-4 py-2 text-sm">{{ detail.country }}</td>
+                <td class="border border-gray-300 px-4 py-2 text-sm whitespace-nowrap">{{ detail.created_at }}</td>
+                <td class="border border-gray-300 px-4 py-2 text-center text-blue-500 cursor-pointer">
+                    <a href="{% url "dashboard:view-record" detail.pk %}"><i class="fa-solid fa-eye"></i></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+</div>
+{% else %}
+<div class="flex flex-col items-center mt-11 gap-5 max-w-screen-xl mx-auto w-full h-full">
+
+    <p class="text-center text-2xl font-medium">No records to show.</p>
+    <a href="{% url "dashboard:add-new-record" %}" class="flex items-center gap-3 border-2 rounded-md border-slate-600 w-fit py-1 px-3 text-sm hover:bg-slate-600 hover:text-white transition-all duration-500 ease-in-out">Create a new record <span class="font-extrabold"><i class="fa-solid fa-plus"></i></span></a>
+</div>
+{% endif %}
+{% endblock content %}
