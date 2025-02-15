@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
-
+import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -43,6 +43,10 @@ INSTALLED_APPS = [
     'tailwind',
     'theme',
     'django_browser_reload',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 TAILWIND_APP_NAME = 'theme'
@@ -50,6 +54,7 @@ INTERNAL_IPS = ['127.0.0.1']
 NPM_BIN_PATH = "C:/Program Files/nodejs/npm.cmd"  
 
 MIDDLEWARE = [
+    "allauth.account.middleware.AccountMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -60,6 +65,35 @@ MIDDLEWARE = [
 
     'django_browser_reload.middleware.BrowserReloadMiddleware',
 ]
+
+
+
+# Initialize environment variables
+env = environ.Env()
+env_path = os.path.join(os.path.dirname(__file__), "../.env")  # Adjust if needed
+environ.Env.read_env(env_path)
+  # Adjust path if needed
+
+# Load Google Auth credentials
+GOOGLE_CLIENT_ID = env("GOOGLE_CLIENT_ID", default=None)
+GOOGLE_CLIENT_SECRET = env("GOOGLE_CLIENT_SECRET", default=None)
+
+if not GOOGLE_CLIENT_ID:
+    raise Exception(f"GOOGLE_CLIENT_ID is missing! (Checked at: {env_path})")
+
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        'APP': {
+            'client_id': GOOGLE_CLIENT_ID,
+            'secret': GOOGLE_CLIENT_SECRET,
+            'key': ''
+        }
+    }
+}
 
 ROOT_URLCONF = 'swiftCRM.urls'
 
@@ -93,6 +127,16 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+AUTHENTICATION_BACKENDS = [
+    
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
+    
+]
 
 
 # Password validation
@@ -138,3 +182,8 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+LOGIN_REDIRECT_URL = 'dashboard:dashboard'
+LOGOUT_REDIRECT_URL = 'dashboard:index'
+SOCIALACCOUNT_LOGIN_ON_GET = True

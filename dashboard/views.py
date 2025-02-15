@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from .models import *
-from .forms import AddNewRecordForm,UpdateRecordForm
+from .forms import AddNewRecordForm,UpdateRecordForm,DeleteRecordForm
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -50,3 +50,17 @@ def update_record_view(request,pk):
     else:
         form = UpdateRecordForm(instance=record)
     return render(request,'dashboard/update_record.html',{'form':form})
+
+
+
+@login_required
+def delete_record_view(request,pk):
+    record = CustomerDetail.objects.get(user=request.user, pk=pk)
+    if request.method == 'POST':
+        form = DeleteRecordForm(request.POST)
+        if form.is_valid() and form.cleaned_data['confirm']:
+            record.delete()
+            return redirect('dashboard:dashboard')
+    else:
+        form = DeleteRecordForm()
+    return render(request,'dashboard/delete_record.html',{'form':form,'record':record})
