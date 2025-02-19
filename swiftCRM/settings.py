@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-=-zqm1!&njmks^96$zqv^ry6lqun@ad#_z(svjqdmbepqh-mi4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['swiftcrm.onrender.com','localhost','127.0.0.1']
 
 
 # Application definition
